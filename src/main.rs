@@ -1,8 +1,9 @@
 mod files;
+mod ex_1 {
+    pub mod ex_1;
+}
 
 fn main() {
-    let vec = files::get_lines(String::from("/Users/rama/Documents/adventofcode/2021/rust/src/test.txt"));
-    for x in &vec {
-        println!("{}", x);
-    }
+    // ex_1::ex_1::run_a();
+    ex_1::ex_1::run_b();
 }
