@@ -4,7 +4,7 @@ use std::string::ParseError;
 
 const GRID_SIZE: u32 = 5;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 struct Number {
     value: u32,
     marked: bool,
@@ -16,10 +16,12 @@ impl Number {
     }
 }
 
-#[derive(Debug)]
+type Matrix = Vec<Vec<Number>>;
+
+#[derive(Debug, Clone)]
 struct Board {
     won: bool,
-    rows: Vec<Vec<Number>>,
+    rows: Matrix,
 }
 
 impl Board {
@@ -38,11 +40,30 @@ impl Board {
     }
 
     fn has_won(&self) -> bool {
+        // check rows
         for row in self.rows.iter() {
             if row.iter().all(|n| n.marked) {
                 return true;
             }
         }
+
+        // check columns
+
+        for i in 0..GRID_SIZE {
+            let mut all_marked = true;
+
+            for row in self.rows.iter() {
+                if !row[i as usize].marked {
+                    all_marked = false;
+                }
+            }
+
+            if (all_marked) {
+                return true;
+            }
+        }
+
+        // otherwise the game keeps going on
         false
     }
 }
