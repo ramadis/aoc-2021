@@ -6,11 +6,13 @@ pub fn run() {
         "/Users/rama/Documents/adventofcode/2021/rust/src/ex_3/input.txt",
     ));
 
+    // store the size of the binary string
+    let size = lines[0].len();
+
     // parses the lines into binary numbers
     let numbers = lines
         .iter()
         .map(|line| u32::from_str_radix(line, 2).unwrap());
-
 
     // the way the algorithm works is:
     // 1) create an array filled with 0s [0, 0, ...] with the same length of input numbers.
@@ -19,10 +21,10 @@ pub fn run() {
     // 4) if that's the case, increase by one the count in the same index.
     // this way, we end with an array, where each element is the # of 1s for the given index
     let base: u32 = 2;
-    let mut count = [0; 12];
+    let mut count = vec![0; size];
     for number in numbers.clone() {
-        for i in 0..12 {
-            let num_mask = base.pow(11 - i);
+        for i in 0..size {
+            let num_mask = base.pow((size - 1 - i) as u32);
             let masked = num_mask & number;
             if masked > 0 {
                 count[i as usize] += 1;
@@ -50,7 +52,7 @@ pub fn run() {
     // the only catch is we have to mask the gamma rate because otherwise we are
     // putting 1s in the most significative bits of the epsilon_rate variable.
     let gamma_rate = u32::from_str_radix(&str_gamma_rate, 2).unwrap();
-    let epsilon_rate = !gamma_rate & (base.pow(lines[0].len() as u32) - 1);
+    let epsilon_rate = !gamma_rate & (base.pow(size as u32) - 1);
     let result = gamma_rate * epsilon_rate;
 
     println!("gamma_rate: {}, epsilon_rate: {}, result: {}", gamma_rate, epsilon_rate, result);
