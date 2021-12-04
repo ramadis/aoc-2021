@@ -5,16 +5,40 @@ use std::string::ParseError;
 const GRID_SIZE: u32 = 5;
 
 #[derive(Debug)]
+struct Number {
+    value: u32,
+    marked: bool,
+}
+
+impl Number {
+    fn mark(&mut self) {
+        self.marked = true;
+    }
+}
+
+#[derive(Debug)]
 struct Board {
     won: bool,
-    rows: Vec<Vec<u32>>,
+    rows: Vec<Vec<Number>>,
+}
+
+impl Board {
+    fn mark_number(&mut self, num: u32) {
+        for row in self.rows.iter_mut() {
+            for number in row.iter_mut() {
+                if (number.value == num) {
+                    number.mark();
+                }
+            }
+        }
+    }
 }
 
 impl FromStr for Board {
     type Err = ParseError;
 
     fn from_str(raw: &str) -> Result<Self, Self::Err> {
-        let mut rows: Vec<Vec<u32>> = vec![];
+        let mut rows: Vec<Vec<Number>> = vec![];
         let chunks = raw
             .split_whitespace()
             .map(|x| String::from(x))
@@ -28,7 +52,12 @@ impl FromStr for Board {
             .collect::<Vec<Vec<String>>>();
             
         for chunk in chunks {
-            let row = chunk.iter().map(|x| x.parse().unwrap()).collect();
+            let row = chunk.iter().map(|x| {
+                Number {
+                    value: x.parse().unwrap(),
+                    marked: false,
+                }
+            }).collect();
             rows.push(row);
         }
 
@@ -48,7 +77,7 @@ pub fn run() {
 
     println!("drawn_numbers: {:?}", drawn_numbers);
 
-    let boards: Vec<Board> = lines
+    let mut boards: Vec<Board> = lines
         .join("\n")
         .split("\n\n")
         .map(|x| String::from(x))
@@ -56,6 +85,12 @@ pub fn run() {
         .iter()
         .map(|l| l.parse().unwrap())
         .collect();
+
+    for number in drawn_numbers {
+        for board in boards.iter_mut() {
+            board.mark_number(number);
+        }
+    }
 
     println!("{:?}", boards);
 }
