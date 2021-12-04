@@ -32,6 +32,19 @@ impl Board {
             }
         }
     }
+
+    fn sum_unmarked(&self) -> u32 {
+        self.rows.iter().flatten().filter(|n| !n.marked).map(|n| n.value).sum()
+    }
+
+    fn has_won(&self) -> bool {
+        for row in self.rows.iter() {
+            if row.iter().all(|n| n.marked) {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 impl FromStr for Board {
@@ -89,6 +102,11 @@ pub fn run() {
     for number in drawn_numbers {
         for board in boards.iter_mut() {
             board.mark_number(number);
+            if (board.has_won()) {
+                let sum = board.sum_unmarked();
+                println!("Game finished! The sum is {}, the number {}, and the result {}", sum, number, sum * number);
+                return;
+            }
         }
     }
 
