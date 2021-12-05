@@ -48,7 +48,6 @@ impl Board {
         }
 
         // check columns
-
         for i in 0..GRID_SIZE {
             let mut all_marked = true;
 
@@ -68,6 +67,7 @@ impl Board {
     }
 }
 
+// This allows us to use str.parse() with the Board type.
 impl FromStr for Board {
     type Err = ParseError;
 
@@ -109,8 +109,7 @@ pub fn run() {
     let (raw_drawn_numbers, lines) = lines.split_first().unwrap();
     let drawn_numbers: Vec<u32> = raw_drawn_numbers.split(',').map(|x| x.parse().unwrap()).collect();
 
-    println!("drawn_numbers: {:?}", drawn_numbers);
-
+    // All this mess just to parse the boards
     let mut boards: Vec<Board> = lines
         .join("\n")
         .split("\n\n")
@@ -120,6 +119,11 @@ pub fn run() {
         .map(|l| l.parse().unwrap())
         .collect();
 
+    // here's the main algorithm:
+    // 1) Iterate through the drawn numbers
+    // 2) Mark the drawn number on each board
+    // 3) After marking, check if the board is a winning won
+    // 4) If that's the case, calculate the result
     for number in drawn_numbers {
         for board in boards.iter_mut() {
             board.mark_number(number);
