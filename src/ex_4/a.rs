@@ -102,7 +102,7 @@ impl FromStr for Board {
 pub fn run() {
     // first we read the raw lines from the input file
     let lines = files::get_lines(String::from(
-        "/Users/rama/Documents/adventofcode/2021/rust/src/ex_4/example.txt",
+        "/Users/rama/Documents/adventofcode/2021/rust/src/ex_4/input.txt",
     ));
 
     // parse the drawn numbers
