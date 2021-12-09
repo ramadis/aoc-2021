@@ -6,6 +6,7 @@ pub fn run() {
         "/Users/rama/Documents/adventofcode/2021/rust/src/ex_8/input.txt",
     ));
 
+    // parse input
     let notes: Vec<(Vec<&str>, Vec<&str>)> = raw_lines.iter().map(|line| {
         let (raw_input, raw_output) = line.split_once(" | ").unwrap();
         let input_list: Vec<&str> = raw_input.split_whitespace().collect();
@@ -13,6 +14,10 @@ pub fn run() {
         (input_list, output_list)
     }).collect();
 
+    // we will keep track of the count for a specific number in this fixed-length array.
+    // this part seems pretty easy, because the numbers we are asked to count, are the
+    // ones that are identifiable by their length alone. so only by looking at the length
+    // we can deduce how many 1, 7, 4, and 8s there are in the output.
     let mut counts: [u32; 10] = [0; 10];
     for (_, output) in notes {
         for signal in output {
@@ -29,6 +34,7 @@ pub fn run() {
         }
     }
 
+    // finally, we sum the counts, as asked by the exercise
     let sum: u32 = counts.iter().sum();
     println!("{:?}", sum);
 }
