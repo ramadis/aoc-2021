@@ -1,15 +1,101 @@
 use super::super::files;
 use std::collections::HashMap;
 
-struct Input {
-    list: Vec<String>,
+struct SignalSolver {
+    input: Vec<String>,
+    map: HashMap<u32, String>
 }
 
-impl Input {
-    pub fn find_1(&mut self, map: &mut HashMap<u32, String>) -> &Self {
-        let signal_1: String = self.list.iter().find(|signal| signal.len() == 2).unwrap().clone();
-        map.insert(1, signal_1.clone());
-        self.list.retain(|signal| *signal != signal_1);
+impl SignalSolver {
+    pub fn reverse_lookup(&self, signal: &String) -> Option<u32> {
+        for key in self.map.keys() {
+            let value = self.map.get(key).unwrap();
+            if value == signal {
+                return Some(*key);
+            }
+        }
+        None
+    }
+
+    pub fn find_0(&mut self) -> &mut Self {
+        let signal_0: String = self.input.iter().find(|signal| {
+            signal.len() == 6
+        }).unwrap().clone();
+        self.map.insert(0, signal_0.clone());
+        self.input.retain(|signal| *signal != signal_0);
+        self
+    }
+
+    pub fn find_1(&mut self) -> &mut Self {
+        let signal_1: String = self.input.iter().find(|signal| signal.len() == 2).unwrap().clone();
+        self.map.insert(1, signal_1.clone());
+        self.input.retain(|signal| *signal != signal_1);
+        self
+    }
+
+    pub fn find_2(&mut self) -> &mut Self {
+        self.map.insert(2, self.input[0].clone());
+        self
+    }
+
+    pub fn find_3(&mut self) -> &mut Self {
+        let signal_3: String = self.input.iter().find(|signal| {
+            let signal_9 = self.map.get(&9).unwrap();
+            signal.chars().all(|c| signal_9.contains(c))
+        }).unwrap().clone();
+        self.map.insert(3, signal_3.clone());
+        self.input.retain(|signal| *signal != signal_3);
+        self
+    }
+
+    pub fn find_4(&mut self) -> &mut Self {
+        let signal_4: String = self.input.iter().find(|signal| signal.len() == 4).unwrap().clone();
+        self.map.insert(4, signal_4.clone());
+        self.input.retain(|signal| *signal != signal_4);
+        self
+    }
+
+    pub fn find_5(&mut self) -> &mut Self {
+        let signal_5: String = self.input.iter().find(|signal| {
+            !self.input.iter().find(|s2| {
+                signal.chars().all(|c| s2.contains(c)) && s2.len() == signal.len() + 1
+            }).is_none()
+        }).unwrap().clone();
+        self.map.insert(5, signal_5.clone());
+        self.input.retain(|signal| *signal != signal_5);
+        self
+    }
+    pub fn find_6(&mut self) -> &mut Self {
+        let signal_6: String = self.input.iter().find(|signal| {
+            let signal_5 = self.map.get(&5).unwrap();
+            signal.len() == signal_5.len() + 1 && signal_5.chars().all(|c| signal.contains(c))
+        }).unwrap().clone();
+        self.map.insert(6, signal_6.clone());
+        self.input.retain(|signal| *signal != signal_6);
+        self
+    }
+
+    pub fn find_7(&mut self) -> &mut Self {
+        let signal_7: String = self.input.iter().find(|signal| signal.len() == 3).unwrap().clone();
+        self.map.insert(7, signal_7.clone());
+        self.input.retain(|signal| *signal != signal_7);
+        self
+    }
+
+    pub fn find_8(&mut self) -> &mut Self {
+        let signal_8: String = self.input.iter().find(|signal| signal.len() == 7).unwrap().clone();
+        self.map.insert(8, signal_8.clone());
+        self.input.retain(|signal| *signal != signal_8);
+        self
+    }
+
+    pub fn find_9(&mut self) -> &mut Self {
+        let signal_9: String = self.input.iter().find(|signal| {
+            let signal_4 = self.map.get(&4).unwrap();
+            signal.len() == signal_4.len() + 2 && signal_4.chars().all(|c| signal.contains(c))
+        }).unwrap().clone();
+        self.map.insert(9, signal_9.clone());
+        self.input.retain(|signal| *signal != signal_9);
         self
     }
 }
@@ -80,90 +166,25 @@ pub fn run() {
     // 5 3 5 3
     // now we only have to write this logic into code...
 
-    let mut number_map:HashMap<u32, String> = HashMap::new();
-    let mut signal_map:HashMap<String, u32> = HashMap::new();
     let mut results: Vec<u32> = vec![];
-    for (mut input, output) in notes {
-        // let mut input = Input {
-        //     list: input
-        // };
-        // input.find_1(&mutnumber_map);
+    for (input, output) in notes {
+        let mut solver = SignalSolver { input, map: HashMap::new() };
 
-        // fetch 1
-        let signal_1: String = input.iter().find(|signal| signal.len() == 2).unwrap().clone();
-        number_map.insert(1, signal_1.clone());
-        signal_map.insert(signal_1.clone(), 1);
-        input.retain(|signal| *signal != signal_1);
+        solver
+            .find_1()
+            .find_7()
+            .find_4()
+            .find_8()
+            .find_9()
+            .find_5()
+            .find_6()
+            .find_0()
+            .find_3()
+            .find_2();
 
-        // fetch 7
-        let signal_7: String = input.iter().find(|signal| signal.len() == 3).unwrap().clone();
-        number_map.insert(7, signal_7.clone());
-        signal_map.insert(signal_7.clone(), 7);
-        input.retain(|signal| *signal != signal_7);
-
-        // fetch 4
-        let signal_4: String = input.iter().find(|signal| signal.len() == 4).unwrap().clone();
-        number_map.insert(4, signal_4.clone());
-        signal_map.insert(signal_4.clone(), 4);
-        input.retain(|signal| *signal != signal_4);
-
-        // fetch 8
-        let signal_8: String = input.iter().find(|signal| signal.len() == 7).unwrap().clone();
-        number_map.insert(8, signal_8.clone());
-        signal_map.insert(signal_8.clone(), 8);
-        input.retain(|signal| *signal != signal_8);
-
-        // fetch 9
-        let signal_9: String = input.iter().find(|signal| {
-            let signal_4 = number_map.get(&4).unwrap();
-            signal.len() == signal_4.len() + 2 && signal_4.chars().all(|c| signal.contains(c))
-        }).unwrap().clone();
-        number_map.insert(9, signal_9.clone());
-        signal_map.insert(signal_9.clone(), 9);
-        input.retain(|signal| *signal != signal_9);
-
-        // fetch 5
-        let signal_5: String = input.iter().find(|signal| {
-            !input.iter().find(|s2| {
-                signal.chars().all(|c| s2.contains(c)) && s2.len() == signal.len() + 1
-            }).is_none()
-        }).unwrap().clone();
-        number_map.insert(5, signal_5.clone());
-        signal_map.insert(signal_5.clone(), 5);
-        input.retain(|signal| *signal != signal_5);
-
-        // fetch 6
-        let signal_6: String = input.iter().find(|signal| {
-            let signal_5 = number_map.get(&5).unwrap();
-            signal.len() == signal_5.len() + 1 && signal_5.chars().all(|c| signal.contains(c))
-        }).unwrap().clone();
-        number_map.insert(6, signal_6.clone());
-        signal_map.insert(signal_6.clone(), 6);
-        input.retain(|signal| *signal != signal_6);
-
-        // fetch 0
-        let signal_0: String = input.iter().find(|signal| {
-            signal.len() == 6
-        }).unwrap().clone();
-        number_map.insert(0, signal_0.clone());
-        signal_map.insert(signal_0.clone(), 0);
-        input.retain(|signal| *signal != signal_0);
-
-        // fetch 3
-        let signal_3: String = input.iter().find(|signal| {
-            let signal_9 = number_map.get(&9).unwrap();
-            signal.chars().all(|c| signal_9.contains(c))
-        }).unwrap().clone();
-        number_map.insert(3, signal_3.clone());
-        signal_map.insert(signal_3.clone(), 3);
-        input.retain(|signal| *signal != signal_3);
-
-        // fetch 2
-        number_map.insert(2, input[0].clone());
-        signal_map.insert(input[0].clone(), 2);
-
-        let result: Vec<u32> = output.iter().map(|signal| signal_map.get(signal).unwrap().clone()).collect();
-        results.push(result[0] * 1000 + result[1] * 100 + result[2] * 10 + result[3]);
+        let result_list: Vec<u32> = output.iter().map(|signal| solver.reverse_lookup(signal).unwrap()).collect();
+        let result = result_list[0] * 1000 + result_list[1] * 100 + result_list[2] * 10 + result_list[3];
+        results.push(result);
     }
 
     let sum = results.iter().sum::<u32>();
