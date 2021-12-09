@@ -31,7 +31,8 @@ mod files;
 //     pub mod b;
 // }
 mod ex_9 {
-    pub mod a;
+    // pub mod a;
+    pub mod b;
 }
 
 fn main() {
@@ -51,5 +52,6 @@ fn main() {
     // ex_7::b::run();
     // ex_8::a::run();
     // ex_8::b::run();
-    ex_9::a::run();
+    // ex_9::a::run();
+    ex_9::b::run();
 }
