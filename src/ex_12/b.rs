@@ -19,23 +19,55 @@ fn is_end(n: &Node) -> bool {
 }
 
 // a function that checks if we can repeat a given node
-fn is_repeatable(n: &Node, visited: &HashSet<Node>) -> bool {
-    n.to_lowercase() != *n
+fn is_repeatable(n: &Node, visited: &HashMap<Node, u32>) -> bool {
+    if n == "start" && visited.contains_key(n) {
+        return false;
+    }
+
+    // if we haven't seen this node before, it is repeatable
+    if !visited.contains_key(n) {
+        return true;
+    }
+
+    // if the node is a big cave, it is repeatable
+    if n.to_uppercase() == *n {
+        return true;
+    }
+
+    // if it is lowercase, and we have seen this before, it is only repeatable
+    // if every lowercase key with a count smaller or equal than one
+    for visited_node in visited.keys() {
+        if visited_node.to_uppercase() == *visited_node {
+            continue;
+        }
+
+        let count = visited.get(visited_node).unwrap();
+        if count > &1 {
+            return false
+        }
+    }
+
+    true
 }
 
 //  a function that generates all paths from a given node to the end
-fn traverse(node: &Node, node_map: &EdgeMap, visited: &mut HashSet<Node>) -> Option<Vec<Path>> {
+fn traverse(node: &Node, node_map: &EdgeMap, visited: &mut HashMap<Node, u32>) -> Option<Vec<Path>> {
     // if we reached the end, just return the "end" node as the only possible path
     if is_end(node) {
         return Some(vec![vec![node.clone()]]);
     }
 
     // if we are not supposed to visit this node, skip
-    if visited.contains(node) && !is_repeatable(node, visited) {
+    if !is_repeatable(node, visited) {
         return None;
     }
-
-    visited.insert(node.clone());
+    
+    if visited.contains_key(node) {
+        let value = visited.get(node).unwrap();
+        visited.insert(node.clone(), value + 1);
+    } else {
+        visited.insert(node.clone(), 1);
+    }
 
     // iterate over the adjacent nodes
     let mut paths:Vec<Path> = vec![];
@@ -108,9 +140,10 @@ pub fn run() {
     }).collect();
 
     // generate all paths from start to end
-    let mut visited: HashSet<Node> = HashSet::new();
+    let mut visited: HashMap<Node, u32> = HashMap::new();
     let start_node = Node::from("start");
     let edges_map = get_edges_map(edges);
     let paths = traverse(&start_node, &edges_map, &mut visited).unwrap();
-    println!("{:?}", paths.len());
+    
+    println!("{}", paths.len());
 }
